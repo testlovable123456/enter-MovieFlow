@@ -76,7 +76,7 @@ const sampleMovies: Movie[] = [
   },
   {
     id: 5,
-    title: "Spider-Man: Across the Spider-Verse",
+    title: "SSSSSSSSpider-Man: Across the Spider-Verse",
     overview: "Miles Morales catapults across the Multiverse, where he encounters a team of Spider-People charged with protecting its very existence.",
     poster_path: "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg",
     backdrop_path: "https://image.tmdb.org/t/p/original/4HodYYKEIsGOdinkGi2Ucz6X9i0.jpg",
