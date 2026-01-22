@@ -9,6 +9,7 @@ export default function Home() {
   const [popular, setPopular] = useState<Movie[]>([]);
   const [topRated, setTopRated] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
+  const [heroImageError, setHeroImageError] = useState(false);
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -21,8 +22,8 @@ export default function Home() {
         setTrending(trendingData.slice(0, 10));
         setPopular(popularData.slice(0, 10));
         setTopRated(topRatedData.slice(0, 10));
-      } catch (error) {
-        console.error('Error fetching movies:', error);
+      } catch (err) {
+        console.error('Error fetching movies:', err instanceof Error ? err.message : 'Unknown error');
       } finally {
         setLoading(false);
       }
@@ -56,15 +57,20 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative h-[400px] rounded-2xl overflow-hidden"
+          className="relative h-[400px] rounded-2xl overflow-hidden bg-muted"
         >
           {trending[0] && (
             <>
-              <img
-                src={tmdbApi.getImageUrl(trending[0].backdrop_path, 'original')}
-                alt={trending[0].title}
-                className="w-full h-full object-cover"
-              />
+              {!heroImageError ? (
+                <img
+                  src={tmdbApi.getImageUrl(trending[0].backdrop_path, 'original')}
+                  alt={trending[0].title}
+                  className="w-full h-full object-cover"
+                  onError={() => setHeroImageError(true)}
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-r from-primary/20 to-accent/20" />
+              )}
               <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent" />
               <div className="absolute inset-0 flex items-center">
                 <div className="container mx-auto px-4">

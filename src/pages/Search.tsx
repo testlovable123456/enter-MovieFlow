@@ -20,8 +20,8 @@ export default function Search() {
     try {
       const movies = await tmdbApi.searchMovies(query);
       setResults(movies);
-    } catch (error) {
-      console.error('Error searching movies:', error);
+    } catch (err) {
+      console.error('Error searching movies:', err instanceof Error ? err.message : 'Unknown error');
     } finally {
       setLoading(false);
     }

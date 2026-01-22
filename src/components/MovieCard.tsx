@@ -15,6 +15,7 @@ export const MovieCard = ({ movie, onWatchlistChange }: MovieCardProps) => {
   const [isInWatchlist, setIsInWatchlist] = useState(
     watchlistService.isInWatchlist(movie.id)
   );
+  const [imageError, setImageError] = useState(false);
 
   const toggleWatchlist = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -37,12 +38,19 @@ export const MovieCard = ({ movie, onWatchlistChange }: MovieCardProps) => {
       onClick={() => navigate(`/movie/${movie.id}`)}
     >
       <div className="relative overflow-hidden rounded-lg bg-card border border-border">
-        <div className="aspect-[2/3] relative">
-          <img
-            src={tmdbApi.getImageUrl(movie.poster_path)}
-            alt={movie.title}
-            className="w-full h-full object-cover"
-          />
+        <div className="aspect-[2/3] relative bg-muted">
+          {!imageError ? (
+            <img
+              src={tmdbApi.getImageUrl(movie.poster_path)}
+              alt={movie.title}
+              className="w-full h-full object-cover"
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-muted">
+              <span className="text-muted-foreground text-center px-4">{movie.title}</span>
+            </div>
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
         

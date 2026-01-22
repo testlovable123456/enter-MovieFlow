@@ -14,6 +14,8 @@ export default function MovieDetail() {
   const [loading, setLoading] = useState(true);
   const [isInWatchlist, setIsInWatchlist] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [backdropError, setBackdropError] = useState(false);
+  const [posterError, setPosterError] = useState(false);
 
   useEffect(() => {
     const fetchMovieData = async () => {
@@ -27,8 +29,8 @@ export default function MovieDetail() {
         setMovie(movieData);
         setVideos(videosData.filter(v => v.site === 'YouTube' && v.type === 'Trailer'));
         setIsInWatchlist(watchlistService.isInWatchlist(parseInt(id)));
-      } catch (error) {
-        console.error('Error fetching movie details:', error);
+      } catch (err) {
+        console.error('Error fetching movie details:', err instanceof Error ? err.message : 'Unknown error');
       } finally {
         setLoading(false);
       }
@@ -74,12 +76,17 @@ export default function MovieDetail() {
         exit={{ opacity: 0 }}
       >
         {/* Hero Section */}
-        <div className="relative h-[500px]">
-          <img
-            src={tmdbApi.getImageUrl(movie.backdrop_path, 'original')}
-            alt={movie.title}
-            className="w-full h-full object-cover"
-          />
+        <div className="relative h-[500px] bg-muted">
+          {!backdropError ? (
+            <img
+              src={tmdbApi.getImageUrl(movie.backdrop_path, 'original')}
+              alt={movie.title}
+              className="w-full h-full object-cover"
+              onError={() => setBackdropError(true)}
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-r from-primary/20 to-accent/20" />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/30" />
           
           <button
@@ -98,11 +105,18 @@ export default function MovieDetail() {
               animate={{ opacity: 1, y: 0 }}
               className="flex-shrink-0"
             >
-              <img
-                src={tmdbApi.getImageUrl(movie.poster_path)}
-                alt={movie.title}
-                className="w-64 rounded-xl shadow-2xl border border-border"
-              />
+              {!posterError ? (
+                <img
+                  src={tmdbApi.getImageUrl(movie.poster_path)}
+                  alt={movie.title}
+                  className="w-64 rounded-xl shadow-2xl border border-border"
+                  onError={() => setPosterError(true)}
+                />
+              ) : (
+                <div className="w-64 h-96 rounded-xl shadow-2xl border border-border bg-muted flex items-center justify-center">
+                  <span className="text-muted-foreground text-center px-4">{movie.title}</span>
+                </div>
+              )}
             </motion.div>
 
             {/* Details */}
